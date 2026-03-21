@@ -15,7 +15,7 @@ namespace InlämningsUppgiftFullStackApplikation
 
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=TaskDb;Trusted_Connection=True;")); //Entity Framework Core configuration for SQL Server
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); //Entity Framework Core configuration for SQL Server
 
             // Add services to the container.
 
