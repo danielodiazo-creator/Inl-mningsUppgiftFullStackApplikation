@@ -25,11 +25,11 @@ namespace InlämningsUppgiftFullStackApplikation
 
             builder.Services.AddScoped<TaskService>();
 
-            builder.Services.AddCors(options =>             //Viktigt. Soluciona el problema de CORS
+            builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend",
                     policy => policy
-                        .WithOrigins("http://127.0.0.1:5500") 
+                        .AllowAnyOrigin()  
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
@@ -49,7 +49,7 @@ namespace InlämningsUppgiftFullStackApplikation
             app.UseCors("AllowFrontend"); //SOLUCIONA EL PROBLEMA DE CORS
             app.UseAuthorization();
 
-
+            app.UseStaticFiles(); //För att använda statiska filer som index.html
             app.MapControllers();
 
             app.Run();
