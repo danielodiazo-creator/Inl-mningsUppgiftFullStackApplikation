@@ -25,6 +25,15 @@ namespace InlämningsUppgiftFullStackApplikation
 
             builder.Services.AddScoped<TaskService>();
 
+            builder.Services.AddCors(options =>             //Viktigt. Soluciona el problema de CORS
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy => policy
+                        .WithOrigins("http://127.0.0.1:5500") 
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
             var app = builder.Build();
 
 
@@ -37,6 +46,7 @@ namespace InlämningsUppgiftFullStackApplikation
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowFrontend"); //SOLUCIONA EL PROBLEMA DE CORS
             app.UseAuthorization();
 
 
