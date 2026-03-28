@@ -1,6 +1,9 @@
 ﻿using InlämningsUppgiftFullStackApplikation.Models;
 using InlämningsUppgiftFullStackApplikation.Services;
 using Microsoft.AspNetCore.Mvc;
+using InlämningsUppgiftFullStackApplikation.Models;
+using InlämningsUppgiftFullStackApplikation.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InlämningsUppgiftFullStackApplikation.Controllers
 {
@@ -19,23 +22,39 @@ namespace InlämningsUppgiftFullStackApplikation.Controllers
         public IActionResult GetAll() => Ok(_service.GetAll());
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id) => Ok(_service.GetById(id));
+        public IActionResult GetById(int id)
+        {
+            var task = _service.GetById(id);
+            if (task == null) return NotFound();
+            return Ok(task);
+        }
 
         [HttpPost]
-        public IActionResult Create(TaskItem task) => Ok(_service.Create(task));
-
-        [HttpPut]
-        public IActionResult Update(TaskItem task)
+        public IActionResult Create(TaskItem task)
         {
-            _service.Update(task);
-            return Ok();
+            var createdTask = _service.Create(task);
+            return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, TaskItem updatedTask)
+        {
+            var existingTask = _service.GetById(id);
+            if (existingTask == null) return NotFound();
+
+            // Actualizamos solo los campos que queremos
+            existingTask.Title = updatedTask.Title;
+            existingTask.IsDone = updatedTask.IsDone;
+
+            _service.Update(existingTask);
+            return NoContent(); // 204 es estándar para PUT exitoso sin devolver objeto
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             _service.Delete(id);
-            return Ok();
+            return NoContent();
         }
     }
 }
